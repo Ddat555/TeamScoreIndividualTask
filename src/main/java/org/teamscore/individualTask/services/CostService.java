@@ -32,6 +32,7 @@ public class CostService {
     @Autowired
     private TypePaymentRepository typePaymentRepository;
 
+    @Transactional
     public CostDTO createCost(CreateCostDTO costDTO){
         Cost cost = new Cost(
                 costDTO.getSellerName(),

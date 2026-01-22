@@ -8,13 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.teamscore.individualTask.models.DTO.entity.CostDTO;
 import org.teamscore.individualTask.models.DTO.entity.createDTO.CreateCostDTO;
-import org.teamscore.individualTask.models.DTO.validationGroup.ICreateValidation;
-import org.teamscore.individualTask.models.DTO.validationGroup.IUpdateValidation;
-import org.teamscore.individualTask.models.entity.Cost;
 import org.teamscore.individualTask.services.CostService;
 
 @Tag(name = "Cost")
@@ -37,7 +33,7 @@ public class CostController {
             @Parameter(description = "Cost ID")
             @RequestParam(name = "id") Long id) {
         var result = costService.getCostById(id);
-        if(result != null)
+        if (result != null)
             return ResponseEntity.status(HttpStatus.OK).body(result);
         else
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Расход с таким ид не найден");
@@ -54,7 +50,7 @@ public class CostController {
     @PutMapping
     public ResponseEntity<?> update(@Valid @RequestBody CostDTO costDTO) {
         var cost = costService.updateCost(costDTO);
-        if(cost != null)
+        if (cost != null)
             return ResponseEntity.status(HttpStatus.OK).body(cost);
         else
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Расход с таким ид не найден");

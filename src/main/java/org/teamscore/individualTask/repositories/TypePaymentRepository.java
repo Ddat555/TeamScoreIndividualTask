@@ -9,5 +9,6 @@ import java.util.Optional;
 
 public interface TypePaymentRepository extends CrudRepository<TypePayment, Long> {
     List<TypePayment> findAll(Pageable pageable);
+
     Optional<TypePayment> findByName(String name);
 }

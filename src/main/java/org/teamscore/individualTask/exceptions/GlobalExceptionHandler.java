@@ -14,17 +14,17 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(CannotDeleteEntityException.class)
-    public ResponseEntity<?> cannotDeleteEntityExceptionHandler(CannotDeleteEntityException cannotDeleteEntityException){
+    public ResponseEntity<?> cannotDeleteEntityExceptionHandler(CannotDeleteEntityException cannotDeleteEntityException) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(cannotDeleteEntityException.getMessage());
     }
 
     @ExceptionHandler(CategoryNotFoundException.class)
-    public ResponseEntity<?> categoryNotFoundExceptionHandler(CategoryNotFoundException categoryNotFoundException){
+    public ResponseEntity<?> categoryNotFoundExceptionHandler(CategoryNotFoundException categoryNotFoundException) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(categoryNotFoundException.getMessage());
     }
 
     @ExceptionHandler(TypePaymentNotFoundException.class)
-    public ResponseEntity<?> typePaymentNotFoundException(TypePaymentNotFoundException typePaymentNotFoundException){
+    public ResponseEntity<?> typePaymentNotFoundException(TypePaymentNotFoundException typePaymentNotFoundException) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(typePaymentNotFoundException.getMessage());
     }
 

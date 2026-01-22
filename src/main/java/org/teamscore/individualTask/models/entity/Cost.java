@@ -1,6 +1,5 @@
 package org.teamscore.individualTask.models.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,9 +10,7 @@ import org.teamscore.individualTask.models.DTO.entity.CostDTO;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -40,14 +37,14 @@ public class Cost {
     )
     private Set<Category> categories = new HashSet<>();
 
-    public Cost( String sellerName, BigDecimal sum, TypePayment typePayment, Set<Category> categories) {
+    public Cost(String sellerName, BigDecimal sum, TypePayment typePayment, Set<Category> categories) {
         this.sellerName = sellerName;
         this.sum = sum;
         this.typePayment = typePayment;
         this.categories = categories;
     }
 
-    public CostDTO toDTO(){
+    public CostDTO toDTO() {
         CostDTO costDTO = new CostDTO();
         costDTO.setId(this.id);
         costDTO.setSum(this.sum);

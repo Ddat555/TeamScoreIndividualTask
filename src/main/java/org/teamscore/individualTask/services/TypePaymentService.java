@@ -10,7 +10,6 @@ import org.teamscore.individualTask.models.entity.TypePayment;
 import org.teamscore.individualTask.repositories.TypePaymentRepository;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class TypePaymentService {
@@ -18,40 +17,40 @@ public class TypePaymentService {
     @Autowired
     private TypePaymentRepository typePaymentRepository;
 
-    public TypePaymentDTO createTypePayment(CreateTypePaymentDTO typePaymentDTO){
+    public TypePaymentDTO createTypePayment(CreateTypePaymentDTO typePaymentDTO) {
         var typePayment = new TypePayment(
                 typePaymentDTO.getName()
         );
         return typePaymentRepository.save(typePayment).toDTO();
     }
 
-    public TypePaymentDTO updateTypePayment(TypePaymentDTO typePayment){
+    public TypePaymentDTO updateTypePayment(TypePaymentDTO typePayment) {
         var oldTypePayment = typePaymentRepository.findById(typePayment.getId());
-        if(oldTypePayment.isEmpty())
+        if (oldTypePayment.isEmpty())
             return null;
         var oldTypePaymentPres = oldTypePayment.get();
         oldTypePaymentPres.setName(typePayment.getName());
         return typePaymentRepository.save(oldTypePaymentPres).toDTO();
     }
 
-    public void deleteTypePayment(Long id){
+    public void deleteTypePayment(Long id) {
         var type = typePaymentRepository.findById(id).orElse(null);
         deleteTypePayment(type);
     }
 
-    public void deleteTypePayment(TypePayment typePayment){
-        if(typePayment != null){
-            if(!typePayment.getCosts().isEmpty())
+    public void deleteTypePayment(TypePayment typePayment) {
+        if (typePayment != null) {
+            if (!typePayment.getCosts().isEmpty())
                 throw new CannotDeleteEntityException(String.format("Невозможно удалить %s с ID %d, так как он используется", typePayment.getName(), typePayment.getId()));
             typePaymentRepository.delete(typePayment);
         }
     }
 
-    public List<TypePaymentDTO> getAllTypePayment(Pageable pageable){
+    public List<TypePaymentDTO> getAllTypePayment(Pageable pageable) {
         return typePaymentRepository.findAll(pageable).stream().map(TypePayment::toDTO).toList();
     }
 
-    public TypePaymentDTO getTypePaymentByName(String name){
+    public TypePaymentDTO getTypePaymentByName(String name) {
         var typeOpt = typePaymentRepository.findByName(name);
         return typeOpt.map(TypePayment::toDTO).orElse(null);
     }

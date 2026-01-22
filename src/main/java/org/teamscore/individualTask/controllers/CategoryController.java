@@ -8,13 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.teamscore.individualTask.models.DTO.entity.CategoryDTO;
 import org.teamscore.individualTask.models.DTO.entity.createDTO.CreateCategoryDTO;
-import org.teamscore.individualTask.models.DTO.validationGroup.ICreateValidation;
-import org.teamscore.individualTask.models.DTO.validationGroup.IUpdateValidation;
-import org.teamscore.individualTask.models.entity.Category;
 import org.teamscore.individualTask.services.CategoryService;
 
 @Tag(name = "Category")
@@ -38,7 +34,7 @@ public class CategoryController {
             @Parameter(description = "Category name")
             @RequestParam(name = "name") String name) {
         var result = categoryService.getCategoryByName(name);
-        if(result != null)
+        if (result != null)
             return ResponseEntity.status(HttpStatus.OK).body(result);
         else
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Категория с таким именем не найдена");
@@ -49,7 +45,7 @@ public class CategoryController {
     public ResponseEntity<?> create(
             @Valid @RequestBody CreateCategoryDTO categoryDTO) {
         System.out.println(categoryDTO);
-        var category  = categoryService.createCategory(categoryDTO);
+        var category = categoryService.createCategory(categoryDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(category);
     }
 
@@ -58,7 +54,7 @@ public class CategoryController {
     public ResponseEntity<?> update(
             @Valid @RequestBody CategoryDTO categoryDTO) {
         var category = categoryService.updateCategory(categoryDTO);
-        if(category != null)
+        if (category != null)
             return ResponseEntity.status(HttpStatus.OK).body(category);
         else
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Категория с таким ид не найдена");

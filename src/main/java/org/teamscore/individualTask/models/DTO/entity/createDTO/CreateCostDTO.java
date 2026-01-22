@@ -1,6 +1,5 @@
 package org.teamscore.individualTask.models.DTO.entity.createDTO;
 
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

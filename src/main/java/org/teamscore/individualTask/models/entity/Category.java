@@ -6,10 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.UuidGenerator;
 import org.teamscore.individualTask.models.DTO.entity.CategoryDTO;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -48,11 +48,11 @@ public class Category {
         this.description = description;
     }
 
-    public boolean isUseInCosts(){
+    public boolean isUseInCosts() {
         return !costs.isEmpty();
     }
 
-    public CategoryDTO toDTO(){
+    public CategoryDTO toDTO() {
         CategoryDTO categoryDTO = new CategoryDTO();
         categoryDTO.setId(this.id);
         categoryDTO.setColor(this.color);

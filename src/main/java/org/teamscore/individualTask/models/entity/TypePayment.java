@@ -8,9 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.teamscore.individualTask.models.DTO.entity.TypePaymentDTO;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -37,11 +35,7 @@ public class TypePayment {
         this.name = name;
     }
 
-    public boolean isUseInCosts(){
-        return !costs.isEmpty();
-    }
-
-    public TypePaymentDTO toDTO(){
+    public TypePaymentDTO toDTO() {
         TypePaymentDTO typePaymentDTO = new TypePaymentDTO();
         typePaymentDTO.setId(this.id);
         typePaymentDTO.setName(this.name);

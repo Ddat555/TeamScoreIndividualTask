@@ -9,7 +9,6 @@ import org.teamscore.individualTask.models.DTO.entity.createDTO.CreateCategoryDT
 import org.teamscore.individualTask.models.entity.Category;
 import org.teamscore.individualTask.repositories.CategoryRepository;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Service

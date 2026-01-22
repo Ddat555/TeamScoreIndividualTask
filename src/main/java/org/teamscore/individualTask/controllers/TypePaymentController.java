@@ -8,13 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.teamscore.individualTask.models.DTO.entity.TypePaymentDTO;
 import org.teamscore.individualTask.models.DTO.entity.createDTO.CreateTypePaymentDTO;
-import org.teamscore.individualTask.models.DTO.validationGroup.ICreateValidation;
-import org.teamscore.individualTask.models.DTO.validationGroup.IUpdateValidation;
-import org.teamscore.individualTask.models.entity.TypePayment;
 import org.teamscore.individualTask.services.TypePaymentService;
 
 @Tag(name = "Type Payment")
@@ -38,7 +34,7 @@ public class TypePaymentController {
             @Parameter(description = "Type payment name")
             @RequestParam(name = "name") String name) {
         var result = typePaymentService.getTypePaymentByName(name);
-        if(result != null)
+        if (result != null)
             return ResponseEntity.status(HttpStatus.OK).body(result);
         else
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Тип оплаты с таким названием не найден");
@@ -55,7 +51,7 @@ public class TypePaymentController {
     @PutMapping
     public ResponseEntity<?> update(@Valid @RequestBody TypePaymentDTO typePaymentDTO) {
         var typePayment = typePaymentService.updateTypePayment(typePaymentDTO);
-        if(typePayment != null)
+        if (typePayment != null)
             return ResponseEntity.status(HttpStatus.OK).body(typePayment);
         else
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Тип оплаты с таким ид не найден");

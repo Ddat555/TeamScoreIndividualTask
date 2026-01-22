@@ -3,13 +3,17 @@ package org.teamscore.individualTask.controllers;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.teamscore.individualTask.models.DTO.entity.CategoryDTO;
 import org.teamscore.individualTask.models.DTO.entity.createDTO.CreateCategoryDTO;
+import org.teamscore.individualTask.models.DTO.validationGroup.ICreateValidation;
+import org.teamscore.individualTask.models.DTO.validationGroup.IUpdateValidation;
 import org.teamscore.individualTask.models.entity.Category;
 import org.teamscore.individualTask.services.CategoryService;
 
@@ -42,7 +46,8 @@ public class CategoryController {
 
     @Operation(summary = "Create category")
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody CreateCategoryDTO categoryDTO) {
+    public ResponseEntity<?> create(
+            @Valid @RequestBody CreateCategoryDTO categoryDTO) {
         System.out.println(categoryDTO);
         var category  = categoryService.createCategory(categoryDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(category);
@@ -50,7 +55,8 @@ public class CategoryController {
 
     @Operation(summary = "Update category")
     @PutMapping
-    public ResponseEntity<?> update(@RequestBody CategoryDTO categoryDTO) {
+    public ResponseEntity<?> update(
+            @Valid @RequestBody CategoryDTO categoryDTO) {
         var category = categoryService.updateCategory(categoryDTO);
         if(category != null)
             return ResponseEntity.status(HttpStatus.OK).body(category);

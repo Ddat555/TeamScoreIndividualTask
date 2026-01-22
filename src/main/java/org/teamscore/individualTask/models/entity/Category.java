@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.UuidGenerator;
+import org.teamscore.individualTask.models.DTO.entity.CategoryDTO;
 
 import java.util.*;
 
@@ -27,7 +28,7 @@ public class Category {
     private String description;
     @ManyToMany(mappedBy = "categories")
     @JsonIgnore
-    private List<Cost> costs = new ArrayList<>();
+    private Set<Cost> costs = new HashSet<>();
 
     public Category(String name, String color) {
         this.name = name;
@@ -49,5 +50,14 @@ public class Category {
 
     public boolean isUseInCosts(){
         return !costs.isEmpty();
+    }
+
+    public CategoryDTO toDTO(){
+        CategoryDTO categoryDTO = new CategoryDTO();
+        categoryDTO.setId(this.id);
+        categoryDTO.setColor(this.color);
+        categoryDTO.setName(this.name);
+        categoryDTO.setDescription(this.description);
+        return categoryDTO;
     }
 }

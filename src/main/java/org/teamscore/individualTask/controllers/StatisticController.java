@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.teamscore.individualTask.models.DTO.statistic.StatisticRequest;
 import org.teamscore.individualTask.services.StatisticService;
 
 import java.time.LocalDate;

@@ -3,13 +3,17 @@ package org.teamscore.individualTask.controllers;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.teamscore.individualTask.models.DTO.entity.TypePaymentDTO;
 import org.teamscore.individualTask.models.DTO.entity.createDTO.CreateTypePaymentDTO;
+import org.teamscore.individualTask.models.DTO.validationGroup.ICreateValidation;
+import org.teamscore.individualTask.models.DTO.validationGroup.IUpdateValidation;
 import org.teamscore.individualTask.models.entity.TypePayment;
 import org.teamscore.individualTask.services.TypePaymentService;
 
@@ -42,14 +46,14 @@ public class TypePaymentController {
 
     @Operation(summary = "Create type payment")
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody CreateTypePaymentDTO typePaymentDTO) {
+    public ResponseEntity<?> create(@Valid @RequestBody CreateTypePaymentDTO typePaymentDTO) {
         var typePayment = typePaymentService.createTypePayment(typePaymentDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(typePayment);
     }
 
     @Operation(summary = "Update type payment")
     @PutMapping
-    public ResponseEntity<?> update(@RequestBody TypePaymentDTO typePaymentDTO) {
+    public ResponseEntity<?> update(@Valid @RequestBody TypePaymentDTO typePaymentDTO) {
         var typePayment = typePaymentService.updateTypePayment(typePaymentDTO);
         if(typePayment != null)
             return ResponseEntity.status(HttpStatus.OK).body(typePayment);

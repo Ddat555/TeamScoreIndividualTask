@@ -17,8 +17,6 @@ public class CategoryService {
 
     @Autowired
     private CategoryRepository categoryRepository;
-    @Autowired
-    private ConverterDTOService converterDTOService;
 
     public CategoryDTO createCategory(CreateCategoryDTO categoryDTO) {
         Category category = new Category(
@@ -26,7 +24,7 @@ public class CategoryService {
                 categoryDTO.getColor(),
                 categoryDTO.getDescription()
         );
-        return converterDTOService.categoryConvert(categoryRepository.save(category));
+        return categoryRepository.save(category).toDTO();
     }
 
     public CategoryDTO updateCategory(CategoryDTO category) {
@@ -37,7 +35,7 @@ public class CategoryService {
         oldCategoryPresent.setColor(category.getColor());
         oldCategoryPresent.setName(category.getName());
         oldCategoryPresent.setDescription(category.getDescription());
-        return converterDTOService.categoryConvert(categoryRepository.save(oldCategoryPresent));
+        return categoryRepository.save(oldCategoryPresent).toDTO();
     }
 
     public void deleteCategory(Long id) {
@@ -54,10 +52,11 @@ public class CategoryService {
     }
 
     public List<CategoryDTO> getAllCategory(Pageable pageable) {
-        return categoryRepository.findAll(pageable).stream().map(cat -> converterDTOService.categoryConvert(cat)).toList();
+        return categoryRepository.findAll(pageable).stream().map(Category::toDTO).toList();
     }
 
     public CategoryDTO getCategoryByName(String name) {
-        return converterDTOService.categoryConvert(categoryRepository.findByName(name).orElse(null));
+        var categoryOpt = categoryRepository.findByName(name);
+        return categoryOpt.map(Category::toDTO).orElse(null);
     }
 }

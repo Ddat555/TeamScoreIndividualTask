@@ -6,9 +6,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.teamscore.individualTask.models.DTO.entity.TypePaymentDTO;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -23,7 +26,7 @@ public class TypePayment {
     private String name;
     @OneToMany(mappedBy = "typePayment")
     @JsonIgnore
-    private List<Cost> costs = new ArrayList<>();
+    private Set<Cost> costs = new HashSet<>();
 
     public TypePayment(String name) {
         this.name = name;
@@ -36,5 +39,12 @@ public class TypePayment {
 
     public boolean isUseInCosts(){
         return !costs.isEmpty();
+    }
+
+    public TypePaymentDTO toDTO(){
+        TypePaymentDTO typePaymentDTO = new TypePaymentDTO();
+        typePaymentDTO.setId(this.id);
+        typePaymentDTO.setName(this.name);
+        return typePaymentDTO;
     }
 }

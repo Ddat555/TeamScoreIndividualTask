@@ -3,13 +3,17 @@ package org.teamscore.individualTask.controllers;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.teamscore.individualTask.models.DTO.entity.CostDTO;
 import org.teamscore.individualTask.models.DTO.entity.createDTO.CreateCostDTO;
+import org.teamscore.individualTask.models.DTO.validationGroup.ICreateValidation;
+import org.teamscore.individualTask.models.DTO.validationGroup.IUpdateValidation;
 import org.teamscore.individualTask.models.entity.Cost;
 import org.teamscore.individualTask.services.CostService;
 
@@ -41,14 +45,14 @@ public class CostController {
 
     @Operation(summary = "Create cost")
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody CreateCostDTO costDTO) {
+    public ResponseEntity<?> create(@Valid @RequestBody CreateCostDTO costDTO) {
         var cost = costService.createCost(costDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(cost);
     }
 
     @Operation(summary = "Update cost")
     @PutMapping
-    public ResponseEntity<?> update(@RequestBody CostDTO costDTO) {
+    public ResponseEntity<?> update(@Valid @RequestBody CostDTO costDTO) {
         var cost = costService.updateCost(costDTO);
         if(cost != null)
             return ResponseEntity.status(HttpStatus.OK).body(cost);

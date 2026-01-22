@@ -10,20 +10,19 @@ import org.teamscore.individualTask.models.entity.TypePayment;
 import org.teamscore.individualTask.repositories.TypePaymentRepository;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class TypePaymentService {
 
     @Autowired
     private TypePaymentRepository typePaymentRepository;
-    @Autowired
-    private ConverterDTOService converterDTOService;
 
     public TypePaymentDTO createTypePayment(CreateTypePaymentDTO typePaymentDTO){
         var typePayment = new TypePayment(
                 typePaymentDTO.getName()
         );
-        return converterDTOService.typePaymentConvert(typePaymentRepository.save(typePayment));
+        return typePaymentRepository.save(typePayment).toDTO();
     }
 
     public TypePaymentDTO updateTypePayment(TypePaymentDTO typePayment){
@@ -32,7 +31,7 @@ public class TypePaymentService {
             return null;
         var oldTypePaymentPres = oldTypePayment.get();
         oldTypePaymentPres.setName(typePayment.getName());
-        return converterDTOService.typePaymentConvert(typePaymentRepository.save(oldTypePaymentPres));
+        return typePaymentRepository.save(oldTypePaymentPres).toDTO();
     }
 
     public void deleteTypePayment(Long id){
@@ -49,11 +48,12 @@ public class TypePaymentService {
     }
 
     public List<TypePaymentDTO> getAllTypePayment(Pageable pageable){
-        return typePaymentRepository.findAll(pageable).stream().map(typ -> converterDTOService.typePaymentConvert(typ)).toList();
+        return typePaymentRepository.findAll(pageable).stream().map(TypePayment::toDTO).toList();
     }
 
     public TypePaymentDTO getTypePaymentByName(String name){
-        return converterDTOService.typePaymentConvert(typePaymentRepository.findByName(name).orElse(null));
+        var typeOpt = typePaymentRepository.findByName(name);
+        return typeOpt.map(TypePayment::toDTO).orElse(null);
     }
 
 

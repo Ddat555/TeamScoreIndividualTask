@@ -39,7 +39,8 @@ public class CostService {
                                 () -> new CategoryNotFoundException("Категория с ид " + cat.getId() + " не найдена")))
                         .collect(Collectors.toSet())
         );
-        return costRepository.save(cost).toDTO();
+        cost = costRepository.save(cost);
+        return new CostDTO(cost);
     }
 
     @Transactional
@@ -56,7 +57,8 @@ public class CostService {
                 () -> new TypePaymentNotFoundException("Тип оплаты с ид " + cost.getTypePayment().getId() + " не найден")));
         oldCostPres.setSum(cost.getSum());
         oldCostPres.setSellerName(cost.getSellerName());
-        return costRepository.save(oldCostPres).toDTO();
+        oldCostPres = costRepository.save(oldCostPres);
+        return new CostDTO(oldCostPres);
     }
 
     public void deleteCost(Long id) {
@@ -68,7 +70,7 @@ public class CostService {
     }
 
     public List<CostDTO> getAllCost(Pageable pageable) {
-        return costRepository.findAll(pageable).stream().map(Cost::toDTO).toList();
+        return costRepository.findAll(pageable).stream().map(CostDTO::new).toList();
     }
 
     public Cost getCostById(Long id) {
@@ -76,6 +78,6 @@ public class CostService {
     }
 
     public List<CostDTO> getAllCostByPeriod(LocalDateTime dateFrom, LocalDateTime dateTo) {
-        return costRepository.findAllByPeriod(dateFrom, dateTo).stream().map(Cost::toDTO).toList();
+        return costRepository.findAllByPeriod(dateFrom, dateTo).stream().map(CostDTO::new).toList();
     }
 }

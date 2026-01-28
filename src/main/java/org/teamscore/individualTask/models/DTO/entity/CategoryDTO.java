@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.teamscore.individualTask.models.entity.Category;
 
 @Getter
 @Setter
@@ -24,4 +25,11 @@ public class CategoryDTO {
     private String color;
     @Size(max = 500, message = "Описание не должно превышать 500 символов")
     private String description;
+
+    public CategoryDTO(Category category){
+        this.id = category.getId();
+        this.name = category.getName();
+        this.color = category.getColor();
+        this.description = category.getDescription();
+    }
 }

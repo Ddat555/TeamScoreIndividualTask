@@ -21,7 +21,8 @@ public class TypePaymentService {
         var typePayment = new TypePayment(
                 typePaymentDTO.getName()
         );
-        return typePaymentRepository.save(typePayment).toDTO();
+        typePayment = typePaymentRepository.save(typePayment);
+        return new TypePaymentDTO(typePayment);
     }
 
     public TypePaymentDTO updateTypePayment(TypePaymentDTO typePayment) {
@@ -30,7 +31,8 @@ public class TypePaymentService {
             return null;
         var oldTypePaymentPres = oldTypePayment.get();
         oldTypePaymentPres.setName(typePayment.getName());
-        return typePaymentRepository.save(oldTypePaymentPres).toDTO();
+        oldTypePaymentPres = typePaymentRepository.save(oldTypePaymentPres);
+        return new TypePaymentDTO(oldTypePaymentPres);
     }
 
     public void deleteTypePayment(Long id) {
@@ -47,12 +49,12 @@ public class TypePaymentService {
     }
 
     public List<TypePaymentDTO> getAllTypePayment(Pageable pageable) {
-        return typePaymentRepository.findAll(pageable).stream().map(TypePayment::toDTO).toList();
+        return typePaymentRepository.findAll(pageable).stream().map(TypePaymentDTO::new).toList();
     }
 
     public TypePaymentDTO getTypePaymentByName(String name) {
         var typeOpt = typePaymentRepository.findByName(name);
-        return typeOpt.map(TypePayment::toDTO).orElse(null);
+        return typeOpt.map(TypePaymentDTO::new).orElse(null);
     }
 
 

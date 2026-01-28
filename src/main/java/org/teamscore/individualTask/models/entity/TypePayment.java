@@ -35,10 +35,4 @@ public class TypePayment {
         this.name = name;
     }
 
-    public TypePaymentDTO toDTO() {
-        TypePaymentDTO typePaymentDTO = new TypePaymentDTO();
-        typePaymentDTO.setId(this.id);
-        typePaymentDTO.setName(this.name);
-        return typePaymentDTO;
-    }
 }

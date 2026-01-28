@@ -44,14 +44,4 @@ public class Cost {
         this.categories = categories;
     }
 
-    public CostDTO toDTO() {
-        CostDTO costDTO = new CostDTO();
-        costDTO.setId(this.id);
-        costDTO.setSum(this.sum);
-        costDTO.setSellerName(this.sellerName);
-        costDTO.setDateTimePay(this.dateTimePay);
-        costDTO.setTypePayment(this.typePayment.toDTO());
-        costDTO.setCategories(this.categories.stream().map(Category::toDTO).collect(Collectors.toSet()));
-        return costDTO;
-    }
 }

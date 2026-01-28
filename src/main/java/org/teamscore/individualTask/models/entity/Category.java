@@ -52,12 +52,4 @@ public class Category {
         return !costs.isEmpty();
     }
 
-    public CategoryDTO toDTO() {
-        CategoryDTO categoryDTO = new CategoryDTO();
-        categoryDTO.setId(this.id);
-        categoryDTO.setColor(this.color);
-        categoryDTO.setName(this.name);
-        categoryDTO.setDescription(this.description);
-        return categoryDTO;
-    }
 }

@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.teamscore.individualTask.models.entity.TypePayment;
 
 @Getter
 @Setter
@@ -18,4 +19,9 @@ public class TypePaymentDTO {
     @NotBlank
     @Size(min = 2, max = 50, message = "Название должно быть от 2 до 50 символов")
     private String name;
+
+    public TypePaymentDTO(TypePayment typePayment){
+        this.id = typePayment.getId();
+        this.name = typePayment.getName();
+    }
 }

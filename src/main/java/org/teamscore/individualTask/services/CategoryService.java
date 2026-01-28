@@ -23,7 +23,8 @@ public class CategoryService {
                 categoryDTO.getColor(),
                 categoryDTO.getDescription()
         );
-        return categoryRepository.save(category).toDTO();
+        category = categoryRepository.save(category);
+        return new CategoryDTO(category);
     }
 
     public CategoryDTO updateCategory(CategoryDTO category) {
@@ -34,7 +35,8 @@ public class CategoryService {
         oldCategoryPresent.setColor(category.getColor());
         oldCategoryPresent.setName(category.getName());
         oldCategoryPresent.setDescription(category.getDescription());
-        return categoryRepository.save(oldCategoryPresent).toDTO();
+        oldCategoryPresent = categoryRepository.save(oldCategoryPresent);
+        return new CategoryDTO(oldCategoryPresent);
     }
 
     public void deleteCategory(Long id) {
@@ -51,11 +53,11 @@ public class CategoryService {
     }
 
     public List<CategoryDTO> getAllCategory(Pageable pageable) {
-        return categoryRepository.findAll(pageable).stream().map(Category::toDTO).toList();
+        return categoryRepository.findAll(pageable).stream().map(CategoryDTO::new).toList();
     }
 
     public CategoryDTO getCategoryByName(String name) {
         var categoryOpt = categoryRepository.findByName(name);
-        return categoryOpt.map(Category::toDTO).orElse(null);
+        return categoryOpt.map(CategoryDTO::new).orElse(null);
     }
 }

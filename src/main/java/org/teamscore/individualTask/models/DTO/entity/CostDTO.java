@@ -5,10 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.teamscore.individualTask.models.entity.Cost;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -31,4 +33,13 @@ public class CostDTO {
     @NotEmpty
     @Size(min = 1, max = 10, message = "Должна быть от 1 до 10 категорий")
     private Set<CategoryDTO> categories;
+
+    public CostDTO(Cost cost){
+        this.id = cost.getId();
+        this.dateTimePay = cost.getDateTimePay();
+        this.sellerName = cost.getSellerName();
+        this.sum = cost.getSum();
+        this.typePayment = new TypePaymentDTO(cost.getTypePayment());
+        this.categories = cost.getCategories().stream().map(CategoryDTO::new).collect(Collectors.toSet());
+    }
 }

@@ -141,6 +141,10 @@ public class StatisticService {
 
         sellerStatistics.sort((c1, c2) -> c2.getTotalSum().compareTo(c1.getTotalSum()));
 
-        return new DetailedStatisticInfo<>(summaryStatistic, sellerStatistics);
+        List<SellerStatistic> topSellers = sellerStatistics.stream()
+                .limit(3)
+                .collect(Collectors.toList());
+
+        return new DetailedStatisticInfo<>(summaryStatistic, topSellers);
     }
 }

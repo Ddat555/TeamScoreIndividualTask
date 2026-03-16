@@ -1,3 +1,7 @@
+Delete from develop.cost;
+delete from develop.category;
+delete from develop.type_payment;
+
 SET client_encoding = 'UTF8';
 SET NAMES 'UTF8';
 

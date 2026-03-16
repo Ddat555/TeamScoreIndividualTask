@@ -1,0 +1,19 @@
+<div class="card mb-4">
+  <div class="card-header">
+    <h5 class="mb-0">{{ title }}</h5>
+  </div>
+  <div class="card-body">
+    <div *ngIf="data.length === 0" class="text-center py-4">
+      <span>Нет данных за выбранный период</span>
+    </div>
+    <div *ngIf="data.length > 0" class="d-flex flex-column gap-2">
+      <app-statistic-node 
+        *ngFor="let item of data; let i = index"
+        [statistic]="item"
+        [index]="title.includes('Топ') ? i + 1 : undefined"
+        [showPercentage]="showPercentage"
+        [showColor]="showColor">
+      </app-statistic-node>
+    </div>
+  </div>
+</div>

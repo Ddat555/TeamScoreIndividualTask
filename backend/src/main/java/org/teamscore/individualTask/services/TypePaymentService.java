@@ -25,6 +25,11 @@ public class TypePaymentService {
         return new TypePaymentDTO(typePayment);
     }
 
+    public TypePaymentDTO getTypePaymentById(Long id){
+        var result = typePaymentRepository.findById(id);
+        return result.map(TypePaymentDTO::new).orElse(null);
+    }
+
     public TypePaymentDTO updateTypePayment(TypePaymentDTO typePayment) {
         var oldTypePayment = typePaymentRepository.findById(typePayment.getId());
         if (oldTypePayment.isEmpty())

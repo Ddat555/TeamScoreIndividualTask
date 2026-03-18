@@ -6,16 +6,20 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.teamscore.individualTask.models.DTO.entity.TypePaymentDTO;
 import org.teamscore.individualTask.models.DTO.entity.createDTO.CreateTypePaymentDTO;
 import org.teamscore.individualTask.services.TypePaymentService;
 
 @Tag(name = "Type Payment")
-@RestController
-@RequestMapping("/api/v1/type-payment")
+@Controller
+@RequestMapping("/type-payments")
 public class TypePaymentController {
 
     @Autowired
@@ -23,46 +27,138 @@ public class TypePaymentController {
 
     @Operation(summary = "Get all type payments")
     @GetMapping
-    public ResponseEntity<?> getAll(Pageable pageable) {
+    public String getAll(
+            @PageableDefault(sort = "name", direction = Sort.Direction.ASC) Pageable pageable,
+            Model model) {
         var typePayments = typePaymentService.getAllTypePayment(pageable);
-        return ResponseEntity.status(HttpStatus.OK).body(typePayments);
+        model.addAttribute("typePayments", typePayments);
+        return "type-payments/list";
     }
 
     @Operation(summary = "Search by name")
     @GetMapping("/search")
-    public ResponseEntity<?> getByName(
-            @Parameter(description = "Type payment name")
-            @RequestParam(name = "name") String name) {
+    public String getByName(
+            @RequestParam(name = "name") String name,
+            Model model) {
         var result = typePaymentService.getTypePaymentByName(name);
-        if (result != null)
-            return ResponseEntity.status(HttpStatus.OK).body(result);
-        else
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Тип оплаты с таким названием не найден");
+
+        if (result != null) {
+            model.addAttribute("typePayment", result);
+            return "type-payments/view";
+        } else {
+            model.addAttribute("error", "Тип оплаты с названием '" + name + "' не найден");
+            return "type-payments/search";
+        }
+    }
+
+    @Operation(summary = "Show create form")
+    @GetMapping("/new")
+    public String showCreateForm(Model model) {
+        model.addAttribute("typePayment", new CreateTypePaymentDTO());
+        return "type-payments/create";
     }
 
     @Operation(summary = "Create type payment")
     @PostMapping
-    public ResponseEntity<?> create(@Valid @RequestBody CreateTypePaymentDTO typePaymentDTO) {
-        var typePayment = typePaymentService.createTypePayment(typePaymentDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(typePayment);
+    public String create(
+            @Valid @ModelAttribute("typePayment") CreateTypePaymentDTO typePaymentDTO,
+            BindingResult result,
+            RedirectAttributes redirectAttributes) {
+
+        if (result.hasErrors()) {
+            return "type-payments/create";
+        }
+
+        try {
+            var existing = typePaymentService.getTypePaymentByName(typePaymentDTO.getName());
+            if (existing != null) {
+                result.rejectValue("name", "error.typePayment", "Тип оплаты с таким названием уже существует");
+                return "type-payments/create";
+            }
+
+            var typePayment = typePaymentService.createTypePayment(typePaymentDTO);
+            redirectAttributes.addFlashAttribute("success",
+                    "Тип оплаты '" + typePayment.getName() + "' успешно создан");
+            return "redirect:/type-payments";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Ошибка при создании: " + e.getMessage());
+            return "redirect:/type-payments/new";
+        }
+    }
+
+    @Operation(summary = "Show edit form")
+    @GetMapping("/edit/{id}")
+    public String showEditForm(
+            @Parameter(description = "Type payment ID")
+            @PathVariable Long id,
+            Model model,
+            RedirectAttributes redirectAttributes) {
+
+        var typePayment = typePaymentService.getTypePaymentById(id);
+        if (typePayment != null) {
+            model.addAttribute("typePayment", typePayment);
+            return "type-payments/edit";
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Тип оплаты с ID " + id + " не найден");
+            return "redirect:/type-payments";
+        }
     }
 
     @Operation(summary = "Update type payment")
-    @PutMapping
-    public ResponseEntity<?> update(@Valid @RequestBody TypePaymentDTO typePaymentDTO) {
-        var typePayment = typePaymentService.updateTypePayment(typePaymentDTO);
-        if (typePayment != null)
-            return ResponseEntity.status(HttpStatus.OK).body(typePayment);
-        else
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Тип оплаты с таким ид не найден");
+    @PutMapping("/{id}")
+    public String update(
+            @Parameter(description = "Type payment ID")
+            @PathVariable Long id,
+            @Valid @ModelAttribute("typePayment") TypePaymentDTO typePaymentDTO,
+            BindingResult result,
+            RedirectAttributes redirectAttributes) {
+
+        if (result.hasErrors()) {
+            return "type-payments/edit";
+        }
+
+        try {
+            typePaymentDTO.setId(id);
+
+            var existing = typePaymentService.getTypePaymentByName(typePaymentDTO.getName());
+            if (existing != null && !existing.getId().equals(id)) {
+                result.rejectValue("name", "error.typePayment", "Тип оплаты с таким названием уже существует");
+                return "type-payments/edit";
+            }
+
+            var updated = typePaymentService.updateTypePayment(typePaymentDTO);
+
+            if (updated != null) {
+                redirectAttributes.addFlashAttribute("success",
+                        "Тип оплаты '" + updated.getName() + "' успешно обновлен");
+            } else {
+                redirectAttributes.addFlashAttribute("error", "Тип оплаты с ID " + id + " не найден");
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Ошибка при обновлении: " + e.getMessage());
+        }
+
+        return "redirect:/type-payments";
     }
 
     @Operation(summary = "Delete type payment")
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> delete(
+    @DeleteMapping("/{id}")
+    public String delete(
             @Parameter(description = "Type payment ID")
-            @PathVariable(name = "id") Long id) {
-        typePaymentService.deleteTypePayment(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("");
+            @PathVariable Long id,
+            RedirectAttributes redirectAttributes) {
+
+        try {
+            var typePayment = typePaymentService.getTypePaymentById(id);
+            String name = (typePayment != null) ? typePayment.getName() : String.valueOf(id);
+
+            typePaymentService.deleteTypePayment(id);
+            redirectAttributes.addFlashAttribute("success",
+                    "Тип оплаты '" + name + "' успешно удален");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Ошибка при удалении: " + e.getMessage());
+        }
+
+        return "redirect:/type-payments";
     }
 }

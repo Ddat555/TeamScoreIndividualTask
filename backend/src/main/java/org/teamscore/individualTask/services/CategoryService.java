@@ -27,6 +27,11 @@ public class CategoryService {
         return new CategoryDTO(category);
     }
 
+    public CategoryDTO getCategoryById(Long id){
+        var caregory = categoryRepository.findById(id);
+        return caregory.map(CategoryDTO::new).orElse(null);
+    }
+
     public CategoryDTO updateCategory(CategoryDTO category) {
         var oldCategory = categoryRepository.findById(category.getId());
         if (oldCategory.isEmpty())

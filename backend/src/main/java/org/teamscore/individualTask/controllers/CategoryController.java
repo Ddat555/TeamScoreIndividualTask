@@ -1,21 +1,21 @@
 package org.teamscore.individualTask.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.teamscore.individualTask.models.DTO.entity.CategoryDTO;
 import org.teamscore.individualTask.models.DTO.entity.createDTO.CreateCategoryDTO;
 import org.teamscore.individualTask.services.CategoryService;
 
 @Tag(name = "Category")
-@RestController
-@RequestMapping("/api/v1/category")
+@Controller
+@RequestMapping("/categories")
 public class CategoryController {
 
     @Autowired
@@ -23,49 +23,76 @@ public class CategoryController {
 
     @Operation(summary = "Get all categories")
     @GetMapping
-    public ResponseEntity<?> getAll(Pageable pageable) {
+    public String getAll(Pageable pageable, Model model) {
         var result = categoryService.getAllCategory(pageable);
-        return ResponseEntity.status(HttpStatus.OK).body(result);
+        model.addAttribute("categories", result);
+        return "categories";
     }
 
     @Operation(summary = "Search by name")
     @GetMapping("/search")
-    public ResponseEntity<?> getByName(
-            @Parameter(description = "Category name")
-            @RequestParam(name = "name") String name) {
+    public String getByName(
+            @RequestParam(name = "name") String name,
+            Model model) {
         var result = categoryService.getCategoryByName(name);
-        if (result != null)
-            return ResponseEntity.status(HttpStatus.OK).body(result);
-        else
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Категория с таким именем не найдена");
+
+        if (result != null) {
+            model.addAttribute("category", result);
+        } else {
+            model.addAttribute("error", "Категория с именем '" + name + "' не найдена");
+        }
+        return "searchCategory";
+    }
+
+    @Operation(summary = "Show create form")
+    @GetMapping("/new")
+    public String showCreateForm(Model model) {
+        model.addAttribute("category", new CreateCategoryDTO());
+        return "createCategory";
     }
 
     @Operation(summary = "Create category")
     @PostMapping
-    public ResponseEntity<?> create(
-            @Valid @RequestBody CreateCategoryDTO categoryDTO) {
-        System.out.println(categoryDTO);
-        var category = categoryService.createCategory(categoryDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(category);
+    public String create(
+            @Valid @ModelAttribute("category") CreateCategoryDTO categoryDTO,
+            BindingResult result) {
+
+        if (result.hasErrors()) {
+            return "createCategory";
+        }
+
+        categoryService.createCategory(categoryDTO);
+        return "redirect:/categories";
+    }
+
+    @Operation(summary = "Show edit form")
+    @GetMapping("/edit/{id}")
+    public String showEditForm(@PathVariable Long id, Model model) {
+        var category = categoryService.getCategoryById(id);
+        model.addAttribute("category", category);
+        return "editCategory";
     }
 
     @Operation(summary = "Update category")
-    @PutMapping
-    public ResponseEntity<?> update(
-            @Valid @RequestBody CategoryDTO categoryDTO) {
-        var category = categoryService.updateCategory(categoryDTO);
-        if (category != null)
-            return ResponseEntity.status(HttpStatus.OK).body(category);
-        else
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Категория с таким ид не найдена");
+    @PutMapping("/{id}")
+    public String update(
+            @PathVariable Long id,
+            @Valid @ModelAttribute CategoryDTO categoryDTO,
+            BindingResult result) {
+
+        if (result.hasErrors()) {
+            return "editCategory";
+        }
+
+        categoryDTO.setId(id);
+        categoryService.updateCategory(categoryDTO);
+        return "redirect:/categories";
     }
 
     @Operation(summary = "Delete category")
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> delete(
-            @Parameter(description = "Category ID")
-            @PathVariable(name = "id") Long id) {
+    @DeleteMapping("/{id}")
+    public String delete(@PathVariable Long id) {
         categoryService.deleteCategory(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+        return "redirect:/categories";
     }
 }

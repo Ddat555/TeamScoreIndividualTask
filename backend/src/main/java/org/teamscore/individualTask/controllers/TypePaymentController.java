@@ -35,6 +35,18 @@ public class TypePaymentController {
         return "type-payments/list";
     }
 
+    @Operation(summary = "Get typePayment by ID")
+    @GetMapping("/{id}")
+    public String getById(@PathVariable Long id, Model model) {
+        var result = typePaymentService.getTypePaymentById(id);
+        if (result != null) {
+            model.addAttribute("typePayment", result);
+            return "type-payments/view";
+        } else {
+            return "redirect:/type-payments";
+        }
+    }
+
     @Operation(summary = "Search by name")
     @GetMapping("/search")
     public String getByName(
@@ -143,22 +155,13 @@ public class TypePaymentController {
 
     @Operation(summary = "Delete type payment")
     @DeleteMapping("/{id}")
-    public String delete(
-            @Parameter(description = "Type payment ID")
-            @PathVariable Long id,
-            RedirectAttributes redirectAttributes) {
-
+    public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
-            var typePayment = typePaymentService.getTypePaymentById(id);
-            String name = (typePayment != null) ? typePayment.getName() : String.valueOf(id);
-
             typePaymentService.deleteTypePayment(id);
-            redirectAttributes.addFlashAttribute("success",
-                    "Тип оплаты '" + name + "' успешно удален");
+            redirectAttributes.addFlashAttribute("success", "Тип оплаты удален");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Ошибка при удалении: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Нельзя удалить тип оплаты, так как он используется в расходах");
         }
-
         return "redirect:/type-payments";
     }
 }

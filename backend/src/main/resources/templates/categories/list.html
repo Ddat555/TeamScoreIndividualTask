@@ -9,7 +9,24 @@
 <div class="container mt-4">
     <h1>Категории</h1>
 
+    <!-- Поиск -->
+    <div class="card mb-3">
+        <div class="card-body">
+            <form action="/categories/search" method="get" class="row g-3">
+                <div class="col-md-6">
+                    <input type="text" name="name" class="form-control" placeholder="Поиск категории по названию" required>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary">Найти</button>
+                    <a href="/categories" class="btn btn-secondary">Сброс</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <a href="/categories/new" class="btn btn-primary mb-3">Добавить категорию</a>
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
 
     <table class="table table-bordered">
         <thead>

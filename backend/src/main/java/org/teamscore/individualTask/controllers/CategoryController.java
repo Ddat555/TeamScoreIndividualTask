@@ -9,6 +9,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.teamscore.individualTask.exceptions.CannotDeleteEntityException;
 import org.teamscore.individualTask.models.DTO.entity.CategoryDTO;
 import org.teamscore.individualTask.models.DTO.entity.createDTO.CreateCategoryDTO;
 import org.teamscore.individualTask.services.CategoryService;
@@ -100,8 +102,13 @@ public class CategoryController {
 
     @Operation(summary = "Delete category")
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable Long id) {
-        categoryService.deleteCategory(id);
+    public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            categoryService.deleteCategory(id);
+            redirectAttributes.addFlashAttribute("success", "Категория удалена");
+        } catch (CannotDeleteEntityException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
         return "redirect:/categories";
     }
 }

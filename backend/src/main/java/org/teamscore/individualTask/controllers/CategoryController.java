@@ -26,7 +26,15 @@ public class CategoryController {
     public String getAll(Pageable pageable, Model model) {
         var result = categoryService.getAllCategory(pageable);
         model.addAttribute("categories", result);
-        return "categories";
+        return "categories/list";
+    }
+
+    @Operation(summary = "Get category by ID")
+    @GetMapping("/{id}")
+    public String getById(@PathVariable Long id, Model model) {
+        var category = categoryService.getCategoryById(id);
+        model.addAttribute("category", category);
+        return "categories/view";
     }
 
     @Operation(summary = "Search by name")
@@ -38,17 +46,18 @@ public class CategoryController {
 
         if (result != null) {
             model.addAttribute("category", result);
+            return "categories/view";
         } else {
             model.addAttribute("error", "Категория с именем '" + name + "' не найдена");
+            return "categories/search";
         }
-        return "searchCategory";
     }
 
     @Operation(summary = "Show create form")
     @GetMapping("/new")
     public String showCreateForm(Model model) {
         model.addAttribute("category", new CreateCategoryDTO());
-        return "createCategory";
+        return "categories/create";
     }
 
     @Operation(summary = "Create category")
@@ -58,7 +67,7 @@ public class CategoryController {
             BindingResult result) {
 
         if (result.hasErrors()) {
-            return "createCategory";
+            return "categories/create";
         }
 
         categoryService.createCategory(categoryDTO);
@@ -70,18 +79,18 @@ public class CategoryController {
     public String showEditForm(@PathVariable Long id, Model model) {
         var category = categoryService.getCategoryById(id);
         model.addAttribute("category", category);
-        return "editCategory";
+        return "categories/edit";
     }
 
     @Operation(summary = "Update category")
     @PutMapping("/{id}")
     public String update(
             @PathVariable Long id,
-            @Valid @ModelAttribute CategoryDTO categoryDTO,
+            @Valid @ModelAttribute("category") CategoryDTO categoryDTO,
             BindingResult result) {
 
         if (result.hasErrors()) {
-            return "editCategory";
+            return "categories/edit";
         }
 
         categoryDTO.setId(id);

@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -13,9 +14,15 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.teamscore.individualTask.models.DTO.entity.CategoryDTO;
 import org.teamscore.individualTask.models.DTO.entity.CostDTO;
+import org.teamscore.individualTask.models.DTO.entity.TypePaymentDTO;
 import org.teamscore.individualTask.models.DTO.entity.createDTO.CreateCostDTO;
+import org.teamscore.individualTask.services.CategoryService;
 import org.teamscore.individualTask.services.CostService;
+import org.teamscore.individualTask.services.TypePaymentService;
+
+import java.util.List;
 
 @Tag(name = "Cost")
 @Controller
@@ -24,6 +31,20 @@ public class CostController {
 
     @Autowired
     private CostService costService;
+    @Autowired
+    private TypePaymentService typePaymentService;
+    @Autowired
+    private CategoryService categoryService;
+
+    @ModelAttribute("typePayments")
+    public List<TypePaymentDTO> getAllTypePayments() {
+        return typePaymentService.getAllTypePayment(Pageable.unpaged());
+    }
+
+    @ModelAttribute("categories")
+    public List<CategoryDTO> getAllCategories() {
+        return categoryService.getAllCategory(Pageable.unpaged());
+    }
 
     @Operation(summary = "Get all costs")
     @GetMapping
@@ -33,6 +54,14 @@ public class CostController {
         var result = costService.getAllCost(pageable);
         model.addAttribute("costs", result);
         return "costs/list";
+    }
+
+    @Operation(summary = "Get category by ID")
+    @GetMapping("/{id}")
+    public String getById_2(@PathVariable Long id, Model model) {
+        var result = costService.getCostById(id);
+        model.addAttribute("cost", result);
+        return "costs/view";
     }
 
     @Operation(summary = "Search by ID")
@@ -90,6 +119,8 @@ public class CostController {
         var cost = costService.getCostById(id);
         if (cost != null) {
             model.addAttribute("cost", cost);
+            model.addAttribute("typePayments", typePaymentService.getAllTypePayment(Pageable.unpaged()));
+            model.addAttribute("categories", categoryService.getAllCategory(Pageable.unpaged()));
             return "costs/edit";
         } else {
             redirectAttributes.addFlashAttribute("error", "Расход с ID " + id + " не найден");
@@ -111,7 +142,6 @@ public class CostController {
         }
 
         try {
-            costDTO.setId(id);
             var updated = costService.updateCost(costDTO);
 
             if (updated != null) {

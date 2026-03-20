@@ -130,8 +130,6 @@ public class TypePaymentController {
         }
 
         try {
-            typePaymentDTO.setId(id);
-
             var existing = typePaymentService.getTypePaymentByName(typePaymentDTO.getName());
             if (existing != null && !existing.getId().equals(id)) {
                 result.rejectValue("name", "error.typePayment", "Тип оплаты с таким названием уже существует");

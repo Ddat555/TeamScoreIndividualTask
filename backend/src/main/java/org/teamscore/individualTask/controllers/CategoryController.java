@@ -95,7 +95,6 @@ public class CategoryController {
             return "categories/edit";
         }
 
-        categoryDTO.setId(id);
         categoryService.updateCategory(categoryDTO);
         return "redirect:/categories";
     }

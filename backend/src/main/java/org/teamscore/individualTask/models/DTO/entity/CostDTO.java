@@ -5,10 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.teamscore.individualTask.models.entity.Category;
 import org.teamscore.individualTask.models.entity.Cost;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -28,18 +30,20 @@ public class CostDTO {
     @Positive
     @Digits(integer = 10, fraction = 2, message = "Формат суммы: 10 цифр до точки и 2 после")
     private BigDecimal sum;
-    @NotNull
     private TypePaymentDTO typePayment;
-    @NotEmpty
-    @Size(min = 1, max = 10, message = "Должна быть от 1 до 10 категорий")
     private Set<CategoryDTO> categories;
 
-    public CostDTO(Cost cost){
+    private Long typePaymentId;
+    private List<Long> categoryIds;
+
+    public CostDTO(Cost cost) {
         this.id = cost.getId();
-        this.dateTimePay = cost.getDateTimePay();
         this.sellerName = cost.getSellerName();
         this.sum = cost.getSum();
+        this.dateTimePay = cost.getDateTimePay();
         this.typePayment = new TypePaymentDTO(cost.getTypePayment());
+        this.typePaymentId = cost.getTypePayment().getId();
         this.categories = cost.getCategories().stream().map(CategoryDTO::new).collect(Collectors.toSet());
+        this.categoryIds = cost.getCategories().stream().map(Category::getId).collect(Collectors.toList());
     }
 }

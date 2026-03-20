@@ -40,6 +40,7 @@ export class StatisticInfoComponent {
 
   private getDatesFromPeriod(period: string): { from: string, to: string } {
     const now = new Date();
+    now.setDate(now.getDate() + 1)
     let fromDate = new Date();
 
     switch(period) {

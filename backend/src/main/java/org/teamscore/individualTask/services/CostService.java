@@ -32,11 +32,11 @@ public class CostService {
         Cost cost = new Cost(
                 costDTO.getSellerName(),
                 costDTO.getSum(),
-                typePaymentRepository.findById(costDTO.getTypePayment().getId()).orElseThrow(
-                        () -> new TypePaymentNotFoundException("Тип оплаты с ид " + costDTO.getTypePayment().getId() + " не найден")),
-                costDTO.getCategories().stream()
-                        .map(cat -> categoryRepository.findById(cat.getId()).orElseThrow(
-                                () -> new CategoryNotFoundException("Категория с ид " + cat.getId() + " не найдена")))
+                typePaymentRepository.findById(costDTO.getTypePaymentId()).orElseThrow(
+                        () -> new TypePaymentNotFoundException("Тип оплаты с ид " + costDTO.getTypePaymentId() + " не найден")),
+                costDTO.getCategoryIds().stream()
+                        .map(catId -> categoryRepository.findById(catId).orElseThrow(
+                                () -> new CategoryNotFoundException("Категория с ид " + catId + " не найдена")))
                         .collect(Collectors.toSet())
         );
         cost = costRepository.save(cost);
@@ -49,12 +49,12 @@ public class CostService {
         if (oldCost.isEmpty())
             return null;
         var oldCostPres = oldCost.get();
-        oldCostPres.setCategories(cost.getCategories().stream()
-                .map(cat -> categoryRepository.findById(cat.getId()).orElseThrow(
-                        () -> new CategoryNotFoundException("Категория с ид " + cat.getId() + " не найдена")))
+        oldCostPres.setCategories(cost.getCategoryIds().stream()
+                .map(cat -> categoryRepository.findById(cat).orElseThrow(
+                        () -> new CategoryNotFoundException("Категория с ид " + cat + " не найдена")))
                 .collect(Collectors.toSet()));
-        oldCostPres.setTypePayment(typePaymentRepository.findById(cost.getTypePayment().getId()).orElseThrow(
-                () -> new TypePaymentNotFoundException("Тип оплаты с ид " + cost.getTypePayment().getId() + " не найден")));
+        oldCostPres.setTypePayment(typePaymentRepository.findById(cost.getTypePaymentId()).orElseThrow(
+                () -> new TypePaymentNotFoundException("Тип оплаты с ид " + cost.getTypePaymentId() + " не найден")));
         oldCostPres.setSum(cost.getSum());
         oldCostPres.setSellerName(cost.getSellerName());
         oldCostPres = costRepository.save(oldCostPres);
@@ -73,8 +73,9 @@ public class CostService {
         return costRepository.findAll(pageable).stream().map(CostDTO::new).toList();
     }
 
-    public Cost getCostById(Long id) {
-        return costRepository.findById(id).orElse(null);
+    public CostDTO getCostById(Long id) {
+        var cost = costRepository.findById(id);
+        return cost.map(CostDTO::new).orElse(null);
     }
 
     public List<CostDTO> getAllCostByPeriod(LocalDateTime dateFrom, LocalDateTime dateTo) {

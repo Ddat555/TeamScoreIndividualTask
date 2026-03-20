@@ -57,6 +57,8 @@ public class TypePaymentService {
         return typePaymentRepository.findAll(pageable).stream().map(TypePaymentDTO::new).toList();
     }
 
+
+
     public TypePaymentDTO getTypePaymentByName(String name) {
         var typeOpt = typePaymentRepository.findByName(name);
         return typeOpt.map(TypePaymentDTO::new).orElse(null);

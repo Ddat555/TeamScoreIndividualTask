@@ -1,0 +1,63 @@
+<div class="row mb-4" *ngIf="summary">
+  <div class="col-md-6">
+    <div class="card text-white bg-primary">
+      <div class="card-body">
+        <h6>Всего расходов</h6>
+        <h2>{{ summary.countCosts }}</h2>
+        <small>за выбранный период</small>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card text-white bg-success">
+      <div class="card-body">
+        <h6>Общая сумма</h6>
+        <h2>{{ summary.totalSum }} ₽</h2>
+        <small>сумма всех расходов</small>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row mb-4" *ngIf="categories && categories.length > 0">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">
+        <h5>Распределение по категориям</h5>
+      </div>
+      <div class="card-body">
+        <div class="d-flex align-items-end justify-content-around" style="height: 200px;">
+          <div *ngFor="let category of categories" class="text-center" style="width: 60px;">
+            <div style="height: 150px; position: relative;" class="bg-light mb-2">
+              <div style="position: absolute; bottom: 0; width: 100%;" 
+                   [style.height.%]="category.percentage"
+                   [style.background-color]="category.color">
+              </div>
+            </div>
+            <div class="small">{{ category.name }}</div>
+            <div class="badge bg-light">{{ category.percentage }}%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row" *ngIf="!summary">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-body">
+        <span class="placeholder col-8"></span>
+        <span class="placeholder col-6"></span>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-body">
+        <span class="placeholder col-8"></span>
+        <span class="placeholder col-6"></span>
+      </div>
+    </div>
+  </div>
+</div>

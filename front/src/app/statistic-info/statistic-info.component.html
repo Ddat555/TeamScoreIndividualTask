@@ -1,0 +1,31 @@
+<div>
+  <app-statistic-choice (search)="onSearch($event)"></app-statistic-choice>
+
+  <div *ngIf="loading" class="text-center my-5">
+    <div class="spinner-border text-primary" role="status"></div>
+    <p class="mt-2">Загрузка статистики...</p>
+  </div>
+
+  <div *ngIf="error" class="alert alert-danger">
+    {{ error }}
+  </div>
+
+  <div *ngIf="!loading && !error && currentData">
+    <app-summary 
+      [summary]="currentData.summary"
+      [categories]="currentData.type === StatisticType.Categories ? currentData.items : []">
+    </app-summary>
+    
+    <app-detailed 
+      [title]="currentData.title"
+      [data]="currentData.items"
+      [showPercentage]="currentData.type !== StatisticType.Sellers"
+      [showColor]="currentData.type === StatisticType.Categories">
+    </app-detailed>
+  </div>
+
+  <div *ngIf="!loading && !error && !currentData" class="text-center my-5">
+    <h4>Выберите тип статистики и период</h4>
+    <p>Используйте панель выше для поиска</p>
+  </div>
+</div>
